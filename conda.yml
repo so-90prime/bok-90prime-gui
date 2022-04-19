@@ -1,0 +1,11 @@
+name: pyindi
+channels:
+  - conda-forge
+  - default
+dependencies:
+  - pip
+  - python >=3.8,<3.10
+  - python-dotenv
+  - tornado
+  - pip:
+    - git+https://github.com/MMTObservatory/pyINDI.git
