@@ -2,6 +2,8 @@
 <html lang="en">
 	<head>
 		{% raw pyindi_head %}
+    <link rel="stylesheet" href="resources/ninety-prime.css">
+    <script src="resources/config.js"></script>
 		<title>90Prime v2.0</title>
 		<script>
 			/**
@@ -15,88 +17,48 @@
 			}
 
 			/**
-			* This function will be called whenever an INDI property with the device 
+			* This function will be called whenever an INDI property with the device
 			*	{{ devices }} is received. This is where users should modify the
 			*	code to append to specific objects.
 			*
-			*	If wanting to use a custom GUI, enable in the configuration and provide the correct syntax for selecting 
+			*	If wanting to use a custom GUI, enable in the configuration and provide the correct syntax for selecting
 			* elements.
 			* @param {Object} indi Contains all information about INDI property
 			*/
 			const handleProperty = (indi) => {
-        // If definition property, build it
-				if (indi.op === IndiOp.DEFINITION) {
-          var vector = updater.custom(indi);
-          // If returned vector is null, then bad selector in the <body> or not found
-          if (!vector) {
-            return;
-          }
-          // Handle vector for the first time here
-          var tip = ""
-          switch (vector.id) {
-            case "GALIL-DMC-2280__IFOCUS_LVDT":
-              setupGoto();
-              tip = `Controls the focus in LVDT units. Users can move the focus individually (A, B, and C) or move them 
-              all with \"GOTO A, B, C\". To move the focus to one set value, use \"Delta Focus All\".`;
-              builder.tooltip(vector, tip);
-              break;
-            case "GALIL-DMC-2280__FW_LIGHTS":
-              tip = `Light indicators for the current state of the filter wheel.`;
-              builder.tooltip(vector, tip);
-              break;
-            case "GALIL-DMC-2280__IFILTER_CHANGE":
-              tip = `Common filter operations. Current filter selected is highlighted. Start the night with "READ FILTERS" and end
-              the night with "END OF NIGHT"`;
-              builder.tooltip(vector, tip);
-              break;
-            case "GALIL-DMC-2280__GFOCUS_DIST":
-              tip = `Changes the guider stage focus in relative units.`;
-              builder.tooltip(vector, tip);
-              break;
-            case "GALIL-DMC-2280__GW_LIGHTS":
-              tip = `Status light of the guider filter wheel.`;
-              builder.tooltip(vector, tip);
-              break;
-            case "GALIL-DMC-2280__GFILTER_CHANGE":
-              tip = `Common guider filter wheel operations. Current filter selected is highlighted. Start the night by initializing.`;
-              builder.tooltip(vector, tip);
-              break;
-            case "GALIL-DMC-2280__TELEMETRY":
-              tip = `Status lights for the galil.`;
-              builder.tooltip(vector, tip);
-              break;
-            default:
-          }
-				}
-				// Handle vector every time it comes in
-				var vector = updater.vector(indi);
-        // If returned vector is null, then bad selector in the <body> or not found
-        if (!vector) {
+        let htmlElement = handle(indi);
+
+        // Bad selector, meaning the custom GUI selector not found
+        if (!htmlElement) {
           return;
         }
 
-        // Replace the switch labels with the filter names and hide the filter names
-				if (vector.id === "GALIL-DMC-2280__IFILTER_NAMES") {
-					for (let i = 1; i < 7; i++) {
-						// Get the names
-						let name = document.querySelector(`#GALIL-DMC-2280__IFILTER_NAMES__ifilter_${i} .pyindi-ro`).textContent;
-						// Get the label and update textcontent
-						let label = document.querySelector(`label[for="GALIL-DMC-2280__IFILTER_CHANGE__i_slot_${i}"`);
-						label.textContent = name;
-						label.classList.add("no-format");
-					}
-				}
-				// Replace the switch labels with the filter names and hide the filter names
-				if (vector.id === "GALIL-DMC-2280__GFILTER_NAMES") {
-					for (let i = 1; i < 7; i++) {
-						// Get the names
-						let name = document.querySelector(`#GALIL-DMC-2280__GFILTER_NAMES__gfilter_${i} .pyindi-ro`).textContent;
-						// Get the label and update textcontent
-						let label = document.querySelector(`label[for="GALIL-DMC-2280__GFILTER_CHANGE__g_slot_${i}"`);
-						label.textContent = name;
-						label.classList.add("no-format");
-					}
-				}
+        if (indi.op === IndiOp.DEFINITION) {
+          // Only update once (on definition)
+          // Use for adding tooltips or modifying the look once
+          if (vector.id === "GALIL-DMC-2280__IFOCUS_LVDT") {
+            setupGoto();
+          }
+          // Append tooltips from config
+          let tip = Tips[vector.id]
+          if (tip) {
+            builder.tooltip(vector, tip);
+          }
+        }
+        else if (indi.op === IndiOp.SET) {
+          // Update everytime new values come in
+          // Use for updating labels with values
+          // Replace the switch labels with the filter names and hide the filter names
+          if (vector.id === "GALIL-DMC-2280__IFILTER_NAMES") {
+            setupFilterNames("i");
+          }
+          else if (vector.id === "GALIL-DMC-2280__GFILTER_NAMES") {
+            setupFilterNames("g");
+          }
+        }
+        else {
+          console.warn(`Indi definition: ${indi.op} not found`)
+        }
 
         return;
 			}
@@ -156,7 +118,7 @@
 					<hr class="pyindi-hr">
           <div data-custom-device="GALIL-DMC-2280" data-custom-vector="TELEMETRY"></div>
 				</div>
-				<div class="bottom">	
+				<div class="bottom">
 					<div class="pyindi-log-viewer">
 						<div class="pyindi-log-container" id="logger">
 							<p class="pyindi-log">INDI Messages and Logs displayed here</p>
@@ -184,109 +146,16 @@
 				setindi("Number", indi, ...theArgs);
 			});
 		}
-	</script>
-  <style>
-    .pyindi-nav {
-      background-color: #B388FF;
-      color: #000;
-    }
-    .pyindi-h4 {
-      color: #000;
-    }
-    .icon {
-      color: #000;
-    }
-    .gui {
-      max-width: 850px;
-      background-color: var(--bg-device);
-      margin: auto;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 2fr 3fr 2fr;
-      gap: 0px 0px;
-    }
-    
-    .top {
-      grid-column: 1 / -1;
-      grid-row: 1;
-    }
-    .left {
-      grid-column: 1;
-      grid-row: 2;
-    }
-    .right {
-      grid-column: 3;
-      grid-row: 2;
-    }
-    .middle {
-      grid-column: 2;
-      grid-row: 2;
-    }
-    .bottom {
-      grid-column: 1 / -1;
-      grid-row: 3;
-    }
-    .no-format {
-      text-transform: none;
-    }
-    .pyindi-light-label {
-      display: block;
-    }
-    .pyindi-switch-label {
-      display:block;
-    }
-    
-    .issues {
-      text-decoration: none;
-      color: #000;
-    }
-    .goto-switch {
-      margin-top: -15px;
-    }
-    
-    #GALIL-DMC-2280__END_OF_NIGHT legend {
-      display: none;
-    }
-    #GALIL-DMC-2280__IFILTER_ACTIONS legend {
-      display: none;
-    }
-    
-    #GALIL-DMC-2280__IFILTER_NAMES {
-      display: none;
-    }
-    #GALIL-DMC-2280__GFILTER_NAMES {
-      display: none;
-    }
-    #GALIL-DMC-2280__IFOCUS_REFERENCE legend {
-      display: none;
-    }
-    #GALIL-DMC-2280__GFILTER_ACTIONS legend {
-      display: none;
-    }
-    #GALIL-DMC-2280__GLIMITS_LIGHTS legend {
-      display: none;
-    }
-    #GALIL-DMC-2280__IFOCUS_LVDTALL legend {
-      display: none;
-    }
-    #GALIL-DMC-2280__TELEMETRY_REFERENCE legend {
-      display: none;
-    }
-    .section-title {
-      font-weight: 700;
-      font-size: 1rem;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: var(--text-header-h2);
-      margin: 0;
-      display: inline-block;
-    }
-    @media screen and (max-width: 580px) {
-      .grid {
-        display: block;
+    // Replace the switch labels with the filter names and hide the filter names
+    const setupFilterNames = (filterType) => {
+      for (let i = 1; i < 7; i++) {
+        // Get the names
+        let name = document.querySelector(`#GALIL-DMC-2280__${filterType.toUpperCase()}FILTER_NAMES__${filterType}filter_${i} .pyindi-ro`).textContent;
+        // Get the label and update textcontent
+        let label = document.querySelector(`label[for="GALIL-DMC-2280__${filterType.toUpperCase()}FILTER_CHANGE__${filterType}_slot_${i}"`);
+        label.textContent = name;
+        label.classList.add("no-format");
       }
     }
-    
-  </style>
+	</script>
 </html>

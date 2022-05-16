@@ -1,0 +1,101 @@
+.pyindi-nav {
+  background-color: #B388FF;
+  color: #000;
+}
+.pyindi-h4 {
+  color: #000;
+}
+.icon {
+  color: #000;
+}
+.gui {
+  max-width: 850px;
+  background-color: var(--bg-device);
+  margin: auto;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 3fr 2fr;
+  gap: 0px 0px;
+}
+
+.top {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+.left {
+  grid-column: 1;
+  grid-row: 2;
+}
+.right {
+  grid-column: 3;
+  grid-row: 2;
+}
+.middle {
+  grid-column: 2;
+  grid-row: 2;
+}
+.bottom {
+  grid-column: 1 / -1;
+  grid-row: 3;
+}
+.no-format {
+  text-transform: none;
+}
+.pyindi-light-label {
+  display: block;
+}
+.pyindi-switch-label {
+  display:block;
+}
+
+.issues {
+  text-decoration: none;
+  color: #000;
+}
+.goto-switch {
+  margin-top: -15px;
+}
+
+#GALIL-DMC-2280__END_OF_NIGHT legend {
+  display: none;
+}
+#GALIL-DMC-2280__IFILTER_ACTIONS legend {
+  display: none;
+}
+
+#GALIL-DMC-2280__IFILTER_NAMES {
+  display: none;
+}
+#GALIL-DMC-2280__GFILTER_NAMES {
+  display: none;
+}
+#GALIL-DMC-2280__IFOCUS_REFERENCE legend {
+  display: none;
+}
+#GALIL-DMC-2280__GFILTER_ACTIONS legend {
+  display: none;
+}
+#GALIL-DMC-2280__GLIMITS_LIGHTS legend {
+  display: none;
+}
+#GALIL-DMC-2280__IFOCUS_LVDTALL legend {
+  display: none;
+}
+#GALIL-DMC-2280__TELEMETRY_REFERENCE legend {
+  display: none;
+}
+.section-title {
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-header-h2);
+  margin: 0;
+  display: inline-block;
+}
+@media screen and (max-width: 580px) {
+  .grid {
+    display: block;
+  }
+}
