@@ -8,19 +8,20 @@ Web-based GUI for Bok/90Prime control.
 ## Create Project
 
 ```bash
+  % cd /home/primefocus
   % git clone https://github.com/so-90prime/bok-90prime-gui.git
-  % cd bok-90prime-gui
-  % echo "INDIHOST='localhost'" >> .env
-  % echo "INDIPORT=7624"        >> .env
-  % echo "WEBHOST='localhost'"  >> .env
-  % echo "WEBPORT=5555"         >> .env
+  % cd /home/primefocus/bok-90prime-gui
+  % echo "INDIHOST='localhost'" >> /home/primefocus/bok-90prime-gui/.env
+  % echo "INDIPORT=7624"        >> /home/primefocus/bok-90prime-gui/.env
+  % echo "WEBHOST='localhost'"  >> /home/primefocus/bok-90prime-gui/.env
+  % echo "WEBPORT=5555"         >> /home/primefocus/bok-90prime-gui/.env
 ```
 
 
 ## Installing (with conda)
 
 ```bash
-  % conda install --file conda.yml
+  % conda install --file /home/primefocus/bok-90prime-gui/conda.yml
 ```
 
 
@@ -30,6 +31,12 @@ Web-based GUI for Bok/90Prime control.
   % python3 -m pip install python-dotenv
   % python3 -m pip install tornado
   % python3 -m pip install git+https://github.com/MMTObservatory/pyINDI.git
+```
+
+## Run
+
+```bash
+  % python3 /home/primefocus/bok-90prime-gui/src/bok.py
 ```
 
 
