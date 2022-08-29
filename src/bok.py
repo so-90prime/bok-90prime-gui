@@ -1,34 +1,49 @@
-#!/usr/bin/python3.8
-import os
-from pathlib import Path
+#!/usr/bin/env python3
+
+
+# +
+# import(s)
+# -
 from dotenv import dotenv_values
-
+from pathlib import Path
+from pyindi.webclient import INDIWebApp
+from pyindi.webclient import INDIHandler
 from tornado.web import StaticFileHandler
-from pyindi.webclient import INDIWebApp, INDIHandler
 
-# Load configuration
-CURRENT_DIR = Path(__file__).parent # The current directory
-config = dotenv_values(CURRENT_DIR.parent / ".env")
+import os
 
-# Configuration
-WEBPORT = int(config["WEBPORT"]) # The port for the web app
-INDIPORT = int(config["INDIPORT"]) # The indiserver port
-INDIHOST = config["INDIHOST"] # Where the indiserver is running
-DEVICES = ["*"] # All devices is called by an asterisk
 
-TEMPLATE = "ninety-prime.html"
+# +
+# config_dict
+# -
+CURRENT_DIR = os.path.dirname(os.path.abspath(os.path.expanduser(os.path.realpath(__file__))))
+PARENT_DIR = os.path.dirname(CURRENT_DIR)
+CONFIG_FILE = f"{PARENT_DIR}/.env"
+config_dict = dotenv_values(CONFIG_FILE)
 
+DEVICES = ["*"]
+INDIHOST = config_dict["INDIHOST"]
+INDIPORT = int(config_dict["INDIPORT"])
+TEMPLATE = f"{CURRENT_DIR}/ninety-prime.html"
+WEBHOST = config_dict["WEBHOST"]
+WEBPORT = int(config_dict["WEBPORT"])
+
+
+# +
 # Build handlers with path for rendering, each path should have a handler
+#  and pass additional variables to appear in the html template
+# -
 class GUI(INDIHandler):
     def get(self):
-        # Pass additional variables to appear in the html template
-        self.indi_render(CURRENT_DIR / TEMPLATE, devices=DEVICES)
+        self.indi_render(TEMPLATE, devices=DEVICES)
 
+
+# +
+# start
+# -
 web_app = INDIWebApp(webport=WEBPORT, indihost=INDIHOST, indiport=INDIPORT)
+print(f"Go to http://{WEBHOST}:{WEBPORT}")
 
-print(f"Go to http://<server_name>:{WEBPORT}")
-print(f"If the server is on localhost go to:")
-print(f"http://localhost:{WEBPORT}/")
 
 # Attach handlers and build the application
 # For images, use tornado.web.StaticFileHandler and link the path

@@ -5,6 +5,18 @@
 Web-based GUI for Bok/90Prime control. 
 
 
+## Create Project
+
+```bash
+  % git clone https://github.com/so-90prime/bok-90prime-gui.git
+  % cd bok-90prime-gui
+  % echo "INDIHOST='localhost'" >> .env
+  % echo "INDIPORT=7624"        >> .env
+  % echo "WEBHOST='localhost'"  >> .env
+  % echo "WEBPORT=5555"         >> .env
+```
+
+
 ## Installing (with conda)
 
 ```bash
@@ -19,6 +31,7 @@ Web-based GUI for Bok/90Prime control.
   % python3 -m pip install tornado
   % python3 -m pip install git+https://github.com/MMTObservatory/pyINDI.git
 ```
+
 
 --------------------------------------
 
