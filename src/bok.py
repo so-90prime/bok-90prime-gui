@@ -43,6 +43,7 @@ class GUI(INDIHandler):
 # -
 web_app = INDIWebApp(webport=WEBPORT, indihost=INDIHOST, indiport=INDIPORT)
 print(f"Go to http://{WEBHOST}:{WEBPORT}")
+print(f"Alternate http://{WEBHOST}:{WEBPORT}/indi")
 
 
 # Attach handlers and build the application
