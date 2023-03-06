@@ -45,8 +45,8 @@
               builder.tooltip(vector, tip);
               break;
             case "GALIL-DMC-2280__IFILTER_CHANGE":
-              tip = `Common filter operations. Current filter selected is highlighted. Start the night with "READ FILTERS" and end
-              the night with "END OF NIGHT"`;
+              tip = `Common filter operations. Current filter selected is highlighted. Start the night with "Start of Night" and end
+              the night with "End of Night"`;
               builder.tooltip(vector, tip);
               break;
             case "GALIL-DMC-2280__GFOCUS_DIST":
@@ -62,7 +62,7 @@
               builder.tooltip(vector, tip);
               break;
             case "GALIL-DMC-2280__TELEMETRY":
-              tip = `Status lights for the galil.`;
+              tip = `Status lights for the system.`;
               builder.tooltip(vector, tip);
               break;
             default:
@@ -126,7 +126,7 @@
 					<div data-custom-device="GALIL-DMC-2280" data-custom-vector="IFILTER_CHANGE"></div>
 					<div data-custom-device="GALIL-DMC-2280" data-custom-vector="IFILTER_NAMES"></div>
 					<div data-custom-device="GALIL-DMC-2280" data-custom-vector="IFILTER_ACTIONS"></div>
-					<div data-custom-device="GALIL-DMC-2280" data-custom-vector="END_OF_NIGHT"></div>
+					<div data-custom-device="GALIL-DMC-2280" data-custom-vector="ASTRONOMER"></div>
 				</div>
 				<div class="middle">
 					<!-- <div data-custom-device="GALIL-DMC-2280" data-custom-vector="TELEMETRY_LVDT"></div> -->
